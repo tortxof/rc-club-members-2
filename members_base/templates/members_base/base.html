@@ -1,0 +1,65 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css"
+    />
+    <title>{% block title %}{% endblock %}</title>
+  </head>
+
+  <body>
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+      <div class="container">
+        <div class="navbar-brand">
+          <a class="navbar-item" href="{% url 'index' %}">
+            <img src="{% static 'members_base/icon.svg' %}" alt="BSRCC Logo" />
+          </a>
+
+          <a
+            role="button"
+            id="main_navbar_burger"
+            class="navbar-burger"
+            aria-label="menu"
+            aria-expanded="false"
+          >
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+          </a>
+        </div>
+
+        <div id="main_navbar" class="navbar-menu">
+          <div class="navbar-start">
+            <a class="navbar-item" href="{% url 'members' %}">All</a>
+          </div>
+
+          <div class="navbar-end">
+            {% if user.is_authenticated %}
+            <div class="navbar-item">{{ user.username }}</div>
+            {% endif %}
+            <div class="navbar-item">
+              <div class="buttons">
+                {% if user.is_authenticated %} {% if user.is_staff %}
+                <a href="{% url 'admin:index' %}" class="button">Admin</a>
+                {% endif %}
+                <a href="{% url 'sign_out' %}" class="button">Sign Out</a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="section">
+      <div class="container">{% block content %}{% endblock %}</div>
+    </div>
+
+    <script src="{% static 'members_base/nav.js' %}"></script>
+  </body>
+</html>

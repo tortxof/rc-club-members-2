@@ -1,0 +1,11 @@
+{% extends "members_base/base.html" %}
+{% block content %}
+<p>
+    {{ object.full_name }}
+</p>
+<ul>
+    {% for phone_number in object.phonenumber_set.all %}
+    <li>{{ phone_number }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}

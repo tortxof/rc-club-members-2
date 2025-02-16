@@ -1,0 +1,44 @@
+{% extends 'members_base/base.html' %}
+
+{% block content %}
+<article class="message is-info">
+
+  <div class="message-header">Member Login</div>
+
+  <div class="message-body">
+    <p>
+      If you are a club member, enter your email address. You will receive a link
+      in your email that will allow access to the roster.
+    </p>
+
+    <p>&nbsp;</p>
+
+    <p>
+      <form action="{% url 'email_read_only_token' %}" method="post">
+        {% csrf_token %}
+  
+  
+        <div class="field has-addons">
+          <div class="control">
+            <input
+              type="email"
+              name="email"
+              maxlength="320"
+              class="input"
+              required
+            />
+          </div>
+  
+          <div class="control">
+            <button type="submit" class="button is-primary">Send Me The Link</button>
+          </div>
+        </div>
+  
+      </form>
+    </p>
+
+  </div>
+
+</article>
+
+{% endblock %}
