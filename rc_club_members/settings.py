@@ -52,6 +52,13 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "members_base.authentication.ReadOnlyTokenBackend",
+]
+
+LOGIN_URL = "index"
+
 ROOT_URLCONF = "rc_club_members.urls"
 
 TEMPLATES = [
