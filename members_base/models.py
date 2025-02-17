@@ -33,7 +33,27 @@ class MembershipClass(UUIDModel):
         return f"{self.name}"
 
 
+class MemberManager(models.Manager):
+    def expired(self):
+        return self.filter(expiration_date__lt=datetime.date.today())
+
+    def current(self):
+        return self.filter(expiration_date__gte=datetime.date.today())
+
+    def previous(self):
+        end_of_last_year = datetime.date.today().replace(
+            month=1, day=1
+        ) - datetime.timedelta(days=1)
+        return self.filter(expiration_date__gte=end_of_last_year)
+
+    def active(self):
+        if datetime.date.today().month <= 3:
+            return self.previous()
+        return self.current()
+
+
 class Member(UUIDModel):
+    objects = MemberManager()
     membership_class = models.ForeignKey(
         MembershipClass, on_delete=models.PROTECT, related_name="membership_class"
     )
