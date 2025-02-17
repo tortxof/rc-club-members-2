@@ -3,13 +3,48 @@
 {% block title %}Members List{% endblock %}
 
 {% block content %}
-<ul>
-    {% for member in object_list %}
-    <li>
-        <a href="{% url 'member_detail' member.id %}">
-            {{ member.full_name }}
-        </a>
-    </li>
-    {% endfor %}
-</ul>
+<table class="table is-striped is-hoverable">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>AMA Number</th>
+            <th>Address</th>
+            <th>City</th>
+            <th>State</th>
+            <th>Zip Code</th>
+            <th>Membership Expiration</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for member in object_list %}
+        <tr>
+            <td>
+                <a href="{% url 'member_detail' member.id %}">
+                    {{ member.full_name }}
+                </a>
+            </td>
+            <td>
+                {% if member.email %}
+                <a
+                    href="mailto:{{ member.email }}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    {{ member.email }}
+                </a>
+                {% else %}
+                &mdash;
+                {% endif %}
+            </td>
+            <td>{{ member.ama_number|default:"&mdash;" }}</td>
+            <td>{{ member.address|default:"&mdash;" }}</td>
+            <td>{{ member.city|default:"&mdash;" }}</td>
+            <td>{{ member.state|default:"&mdash;" }}</td>
+            <td>{{ member.zip_code|default:"&mdash;" }}</td>
+            <td>{{ member.expiration_date }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}
