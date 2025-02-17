@@ -13,7 +13,7 @@ from .models import Member
 
 def index(request):
     if request.user.is_authenticated:
-        return redirect("members")
+        return redirect("members_active")
 
     form = EmailReadOnlyTokenForm()
 
@@ -67,6 +67,22 @@ def email_read_only_token(request):
 
 class MembersListView(LoginRequiredMixin, ListView):
     queryset = Member.objects.all().order_by("last_name", "first_name")
+
+
+class MembersActiveListView(LoginRequiredMixin, ListView):
+    queryset = Member.objects.active().order_by("last_name", "first_name")
+
+
+class MembersCurrentListView(LoginRequiredMixin, ListView):
+    queryset = Member.objects.current().order_by("last_name", "first_name")
+
+
+class MembersExpiredListView(LoginRequiredMixin, ListView):
+    queryset = Member.objects.expired().order_by("last_name", "first_name")
+
+
+class MembersPreviousListView(LoginRequiredMixin, ListView):
+    queryset = Member.objects.previous().order_by("last_name", "first_name")
 
 
 class MemberDetailView(LoginRequiredMixin, DetailView):
