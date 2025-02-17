@@ -3,17 +3,16 @@
 {% block title %}Members List{% endblock %}
 
 {% block content %}
-<table class="table is-striped is-hoverable">
+<table class="table is-striped is-hoverable is-fullwidth">
     <thead>
         <tr>
             <th>Name</th>
             <th>Email</th>
+            <th>Phone</th>
             <th>AMA Number</th>
-            <th>Address</th>
-            <th>City</th>
-            <th>State</th>
-            <th>Zip Code</th>
-            <th>Membership Expiration</th>
+            <th>Office</th>
+            <th>Class</th>
+            <th>Expiration</th>
         </tr>
     </thead>
     <tbody>
@@ -37,11 +36,20 @@
                 &mdash;
                 {% endif %}
             </td>
+            <td>
+                {% for phone_number in member.phonenumber_set.all %}
+                <span class="tag is-medium is-hoverable">{{ phone_number }}</span>
+                {% empty %}
+                &mdash;
+                {% endfor %}
+            </td>
             <td>{{ member.ama_number|default:"&mdash;" }}</td>
-            <td>{{ member.address|default:"&mdash;" }}</td>
-            <td>{{ member.city|default:"&mdash;" }}</td>
-            <td>{{ member.state|default:"&mdash;" }}</td>
-            <td>{{ member.zip_code|default:"&mdash;" }}</td>
+            <td>
+                {% for office in member.offices.all %}
+                <span class="tag is-primary">{{ office }}</span>
+                {% endfor %}
+            </td>
+            <td>{{ member.membership_class }}</td>
             <td>{{ member.expiration_date }}</td>
         </tr>
         {% endfor %}
