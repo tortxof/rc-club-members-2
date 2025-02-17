@@ -6,6 +6,9 @@
 <table class="table is-striped is-hoverable is-fullwidth">
     <thead>
         <tr>
+            {% if user.is_staff %}
+            <th>Admin</th>
+            {% endif %}
             <th>Name</th>
             <th>Email</th>
             <th>Phone</th>
@@ -18,6 +21,16 @@
     <tbody>
         {% for member in object_list %}
         <tr>
+            {% if user.is_staff %}
+            <td>
+                <a
+                    href="{% url 'admin:members_base_member_change' member.id %}"
+                    class="button is-small"
+                >
+                    Admin
+                </a>
+            </td>
+            {% endif %}
             <td>
                 <a href="{% url 'member_detail' member.id %}">
                     {{ member.full_name }}
