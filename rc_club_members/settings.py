@@ -14,6 +14,8 @@ import json
 import os
 from pathlib import Path
 
+from django.contrib.messages import constants as messages
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -56,6 +58,13 @@ AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
     "members_base.authentication.ReadOnlyTokenBackend",
 ]
+
+MESSAGE_TAGS = {
+    messages.INFO: "is-info",
+    messages.SUCCESS: "is-success",
+    messages.WARNING: "is-warning",
+    messages.ERROR: "is-danger",
+}
 
 LOGIN_URL = "index"
 

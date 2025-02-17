@@ -1,5 +1,6 @@
 import requests
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse, HttpResponseNotAllowed
@@ -57,6 +58,8 @@ def email_read_only_token(request):
                 },
                 timeout=settings.MAILGUN_TIMEOUT,
             )
+
+            messages.success(request, "A sign-in link has been sent to your email.")
 
             return redirect("index")
 

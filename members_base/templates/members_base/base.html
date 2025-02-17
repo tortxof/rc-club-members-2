@@ -91,6 +91,18 @@
       </div>
     </nav>
 
+    {% if messages %}
+    <div class="section">
+      <div class="container">
+        {% for message in messages %}
+        <article class="message{% if message.tags %} {{ message.tags }}{% endif %}">
+          <div class="message-body">{{ message }}</div>
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
     <div class="section">
       <div class="container">{% block content %}{% endblock %}</div>
     </div>
