@@ -1,6 +1,8 @@
 import datetime
+import urllib.parse
 from uuid import uuid4
 
+from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
@@ -33,7 +35,7 @@ class MembershipClass(UUIDModel):
         return f"{self.name}"
 
 
-class MemberManager(models.Manager):
+class MemberQuerySet(models.QuerySet):
     def expired(self):
         return self.filter(expiration_date__lt=datetime.date.today())
 
@@ -51,9 +53,19 @@ class MemberManager(models.Manager):
             return self.previous()
         return self.current()
 
+    def mailto_url(self):
+        emails = ",".join(member.email for member in self if member.email)
+        emails = f"bcc={emails}"
+        url = urllib.parse.urlunparse(
+            ("mailto", "", settings.NOREPLY_EMAIL, "", emails, "")
+        )
+        return url
+
+    mailto_url.queryset_only = True
+
 
 class Member(UUIDModel):
-    objects = MemberManager()
+    objects = MemberQuerySet.as_manager()
     membership_class = models.ForeignKey(
         MembershipClass, on_delete=models.PROTECT, related_name="membership_class"
     )

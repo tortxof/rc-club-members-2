@@ -71,6 +71,7 @@ LOGIN_URL = "index"
 MAILGUN_URL = os.getenv("MAILGUN_URL")
 MAILGUN_API_KEY = os.getenv("MAILGUN_API_KEY")
 MAILGUN_TIMEOUT = 60
+NOREPLY_EMAIL = os.getenv("NOREPLY_EMAIL")
 
 ROOT_URLCONF = "rc_club_members.urls"
 
