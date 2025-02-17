@@ -38,7 +38,12 @@
             </td>
             <td>
                 {% for phone_number in member.phonenumber_set.all %}
-                <span class="tag is-medium is-hoverable">{{ phone_number }}</span>
+                <button
+                    class="tag is-medium is-hoverable click-copy"
+                    data-clipboard-text="{{ phone_number }}"
+                >
+                    {{ phone_number }}
+                </button>
                 {% empty %}
                 &mdash;
                 {% endfor %}

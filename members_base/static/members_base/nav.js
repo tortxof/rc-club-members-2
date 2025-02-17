@@ -6,4 +6,6 @@ document.addEventListener("DOMContentLoaded", () => {
     $main_navbar_burger.classList.toggle("is-active");
     $main_navbar.classList.toggle("is-active");
   });
+
+  new ClipboardJS(".click-copy");
 });
