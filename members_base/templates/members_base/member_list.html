@@ -68,7 +68,11 @@
                 {% endfor %}
             </td>
             <td>{{ member.membership_class }}</td>
+            {% if member.membership_is_current %}
             <td>{{ member.expiration_date }}</td>
+            {% else %}
+            <td class="has-text-danger">{{ member.expiration_date }}</td>
+            {% endif %}
         </tr>
         {% endfor %}
     </tbody>

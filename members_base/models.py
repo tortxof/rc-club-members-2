@@ -1,3 +1,4 @@
+import datetime
 from uuid import uuid4
 
 from django.db import models
@@ -58,6 +59,10 @@ class Member(UUIDModel):
             return f"{self.first_name} {self.last_name}"
 
         return f"{self.first_name}"
+
+    @property
+    def membership_is_current(self):
+        return self.expiration_date >= datetime.date.today()
 
 
 class PhoneNumber(UUIDModel):
