@@ -18,80 +18,81 @@
 <p>{{ object_list|length }} members in this group.</p>
 
 <hr>
-
-<table class="table is-striped is-hoverable is-fullwidth">
-    <thead>
-        <tr>
-            {% if user.is_staff %}
-            <th></th>
-            {% endif %}
-            <th>Name</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th>AMA Number</th>
-            <th>Office</th>
-            <th>Class</th>
-            <th>Expiration</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for member in object_list %}
-        <tr>
-            {% if user.is_staff %}
-            <td>
-                <a
-                    href="{% url 'admin:members_base_member_change' member.id %}"
-                    class="button is-small"
-                >
-                    Admin
-                </a>
-            </td>
-            {% endif %}
-            <td>
-                <a href="{% url 'member_detail' member.id %}">
-                    {{ member.full_name }}
-                </a>
-            </td>
-            <td>
-                {% if member.email %}
-                <a
-                    href="mailto:{{ member.email }}"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    {{ member.email }}
-                </a>
-                {% else %}
-                &mdash;
+<div class="table-container">
+    <table class="table is-striped is-hoverable is-fullwidth">
+        <thead>
+            <tr>
+                {% if user.is_staff %}
+                <th></th>
                 {% endif %}
-            </td>
-            <td>
-                {% for phone_number in member.phonenumber_set.all %}
-                <button
-                    class="tag is-medium is-hoverable click-copy{% if phone_number.is_primary %} is-primary{% endif %}"
-                    data-clipboard-text="{{ phone_number }}"
-                    {% if phone_number.is_primary %}title="primary"{% endif %}
-                >
-                    {{ phone_number }}
-                </button>
-                {% empty %}
-                &mdash;
-                {% endfor %}
-            </td>
-            <td>{{ member.ama_number|default:"&mdash;" }}</td>
-            <td>
-                {% for office in member.offices.all %}
-                <span class="tag is-primary">{{ office }}</span>
-                {% endfor %}
-            </td>
-            <td>{{ member.membership_class }}</td>
-            {% if member.membership_is_current %}
-            <td>{{ member.expiration_date }}</td>
-            {% else %}
-            <td class="has-text-danger">{{ member.expiration_date }}</td>
-            {% endif %}
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>AMA Number</th>
+                <th>Office</th>
+                <th>Class</th>
+                <th>Expiration</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for member in object_list %}
+            <tr>
+                {% if user.is_staff %}
+                <td>
+                    <a
+                        href="{% url 'admin:members_base_member_change' member.id %}"
+                        class="button is-small"
+                    >
+                        Admin
+                    </a>
+                </td>
+                {% endif %}
+                <td>
+                    <a href="{% url 'member_detail' member.id %}">
+                        {{ member.full_name }}
+                    </a>
+                </td>
+                <td>
+                    {% if member.email %}
+                    <a
+                        href="mailto:{{ member.email }}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        {{ member.email }}
+                    </a>
+                    {% else %}
+                    &mdash;
+                    {% endif %}
+                </td>
+                <td>
+                    {% for phone_number in member.phonenumber_set.all %}
+                    <button
+                        class="tag is-medium is-hoverable click-copy{% if phone_number.is_primary %} is-primary{% endif %}"
+                        data-clipboard-text="{{ phone_number }}"
+                        {% if phone_number.is_primary %}title="primary"{% endif %}
+                    >
+                        {{ phone_number }}
+                    </button>
+                    {% empty %}
+                    &mdash;
+                    {% endfor %}
+                </td>
+                <td>{{ member.ama_number|default:"&mdash;" }}</td>
+                <td>
+                    {% for office in member.offices.all %}
+                    <span class="tag is-primary">{{ office }}</span>
+                    {% endfor %}
+                </td>
+                <td>{{ member.membership_class }}</td>
+                {% if member.membership_is_current %}
+                <td>{{ member.expiration_date }}</td>
+                {% else %}
+                <td class="has-text-danger">{{ member.expiration_date }}</td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}
