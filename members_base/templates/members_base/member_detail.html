@@ -1,11 +1,144 @@
 {% extends "members_base/base.html" %}
 {% block content %}
-<p>
-    {{ object.full_name }}
-</p>
-<ul>
-    {% for phone_number in object.phonenumber_set.all %}
-    <li>{{ phone_number }}</li>
-    {% endfor %}
-</ul>
+
+<div class="level">
+    <div class="level-left">
+        <div class="level-item">
+            <span
+                class="tag is-info is-medium"
+                title="Membership Class: {{ object.membership_class }}"
+            >
+                {{ object.membership_class }}
+            </span>
+        </div>
+    </div>
+    <div class="level-right">
+        {% for office in object.offices.all %}
+        <div class="level-item">
+            <span
+                class="tag is-primary is-medium"
+                title="Office: {{ office }}"
+            >
+                {{ office }}
+            </span>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="columns">
+    <div class="column">
+        <label class="label">Name</label>
+        <p class="is-size-5">
+            {{ object.full_name }}
+        </p>
+    </div>
+    <div class="column">
+        <label class="label">Email</label>
+        <p class="is-size-5">
+            {% if object.email %}
+            <a href="mailto:{{ object.email }}">{{ object.email }}</a>
+            {% else %}
+            &mdash;
+            {% endif %}
+        </p>
+    </div>
+</div>
+
+{% if object.phonenumber_set.all %}
+<div class="columns">
+    <div class="column">
+        <label class="label">Phone Numbers</label>
+        <p>
+            {% for phone_number in object.phonenumber_set.all %}
+            <button
+                class="tag is-large is-hoverable click-copy{% if phone_number.is_primary %} is-primary{% endif %}"
+                data-clipboard-text="{{ phone_number }}"
+                {% if phone_number.is_primary %}title="primary"{% endif %}
+            >
+                {{ phone_number }}
+            </button>
+            {% endfor %}
+        </p>
+    </div>
+</div>
+{% endif %}
+
+<div class="columns">
+    <div class="column">
+        <label class="label">Address</label>
+        <p class="is-size-5">
+            {{ object.address|default:'&mdash;' }}
+        </p>
+
+    </div>
+</div>
+
+<div class="columns">
+    <div class="column is-narrow">
+        <label class="label">City</label>
+        <p class="is-size-5">
+            {{ object.city|default:'&mdash;' }}
+        </p>
+    </div>
+    <div class="column is-narrow">
+        <label class="label">State</label>
+        <p class="is-size-5">
+            {{ object.state|default:'&mdash;' }}
+        </p>
+    </div>
+    <div class="column is-narrow">
+        <label class="label">Zip Code</label>
+        <p class="is-size-5">
+            {{ object.zip_code|default:'&mdash;' }}
+        </p>
+    </div>
+</div>
+
+<div class="columns">
+    <div class="column">
+        <label class="label">AMA Number</label>
+        <p class="is-size-5">
+            {% if object.ama_number %}
+            <a href="{% url 'ama_verify' object.pk %}{% querystring next=request.path %}">
+                {{ object.ama_number }}
+            </a>
+            {% else %}
+            &mdash;
+            {% endif %}
+        </p>
+    </div>
+    <div class="column">
+        <label class="label">Date of Birth</label>
+        <p class="is-size-5">
+            {{ object.date_of_birth|default:'&mdash;' }}
+        </p>
+    </div>
+    <div class="column">
+        <label class="label">Membership Expiration</label>
+        {% if object.membership_is_current %}
+        <p class="is-size-5">
+            {{ object.expiration_date }}
+        </p>
+        {% else %}
+        <p class="is-size-5 has-text-danger">
+            {{ object.expiration_date }}
+        </p>
+        {% endif %}
+    </div>
+</div>
+
+{% if user.is_staff %}
+<div class="level">
+    <div class="level-left"></div>
+    <div class="level-right">
+        <div class="level-item">
+            <a href="{% url 'admin:members_base_member_change' object.id %}" class="button">
+                Admin
+            </a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 {% endblock %}
