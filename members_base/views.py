@@ -3,7 +3,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponse, HttpResponseNotAllowed
+from django.http import HttpResponseNotAllowed
 from django.shortcuts import redirect, render
 from django.views.generic import DetailView, ListView
 
@@ -27,13 +27,15 @@ def sign_out(request):
 
 
 def read_only_token_auth(request, token):
-    if request.method != "GET":
-        return HttpResponseNotAllowed(["GET"])
-
     user = authenticate(request, token=token)
 
     if user is not None:
         login(request, user)
+    else:
+        messages.error(
+            request,
+            "There was a problem signing you in. The sign-in link may be expired. Please try again.",
+        )
 
     return redirect("index")
 
@@ -45,25 +47,38 @@ def email_read_only_token(request):
             try:
                 member = Member.objects.get(email=form.cleaned_data["email"])
             except Member.DoesNotExist:
+                messages.error(request, "Email address not found.")
                 return redirect("index")
 
-            requests.post(
-                settings.MAILGUN_URL,
-                auth=("api", settings.MAILGUN_API_KEY),
-                data={
-                    "from": f"Members App <{settings.DEFAULT_FROM_EMAIL}>",
-                    "to": [member.email],
-                    "subject": "Members Sign In",
-                    "text": generate_signin_url(member),
-                },
-                timeout=settings.MAILGUN_TIMEOUT,
-            )
+            try:
+                requests.post(
+                    settings.MAILGUN_URL,
+                    auth=("api", settings.MAILGUN_API_KEY),
+                    data={
+                        "from": f"Members App <{settings.DEFAULT_FROM_EMAIL}>",
+                        "to": [member.email],
+                        "subject": "Members Sign In",
+                        "text": generate_signin_url(member),
+                    },
+                    timeout=settings.MAILGUN_TIMEOUT,
+                )
+            except requests.RequestException:
+                messages.error(
+                    request,
+                    "There was a problem sending your email. Please try again later.",
+                )
+                return redirect("index")
 
             messages.success(request, "A sign-in link has been sent to your email.")
 
             return redirect("index")
 
-        return HttpResponse("Form not valid", status=400)
+        messages.error(
+            request,
+            "There was a problem with the data that was submitted. Please try again.",
+        )
+
+        return redirect("index")
 
     return HttpResponseNotAllowed(["POST"])
 
