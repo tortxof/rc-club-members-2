@@ -76,6 +76,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "members_base.context_processors.app_settings",
             ],
         },
     },
@@ -137,3 +138,4 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 APP_ORIGIN = os.getenv("APP_ORIGIN")
+APP_NAME = os.getenv("APP_NAME")
