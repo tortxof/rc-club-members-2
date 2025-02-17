@@ -88,6 +88,12 @@ class Member(UUIDModel):
 class PhoneNumber(UUIDModel):
     phone_number = models.CharField(max_length=255)
     member = models.ForeignKey(Member, on_delete=models.CASCADE)
+    is_primary = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.phone_number}"
+
+    def save(self, *args, **kwargs):
+        if self.is_primary:
+            self.__class__.objects.filter(member=self.member).update(is_primary=False)
+        return super().save(*args, **kwargs)

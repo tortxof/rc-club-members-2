@@ -68,8 +68,9 @@
             <td>
                 {% for phone_number in member.phonenumber_set.all %}
                 <button
-                    class="tag is-medium is-hoverable click-copy"
+                    class="tag is-medium is-hoverable click-copy{% if phone_number.is_primary %} is-primary{% endif %}"
                     data-clipboard-text="{{ phone_number }}"
+                    {% if phone_number.is_primary %}title="primary"{% endif %}
                 >
                     {{ phone_number }}
                 </button>
