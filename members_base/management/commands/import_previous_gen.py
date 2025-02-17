@@ -13,7 +13,7 @@ class Command(BaseCommand):
         parser.add_argument("export_file", type=str)
 
     def handle(self, *args, **options):
-        membership_class = MembershipClass.objects.all().first()
+        membership_class = MembershipClass.objects.get(name="Adult")
 
         with open(options["export_file"]) as f:
             data = json.load(f)["members"]
