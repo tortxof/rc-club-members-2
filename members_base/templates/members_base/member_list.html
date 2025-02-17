@@ -3,6 +3,22 @@
 {% block title %}Members List{% endblock %}
 
 {% block content %}
+{% if url_name == 'members' %}
+<p>All members past and present.</p>
+{% elif url_name == 'members_active' %}
+<p>Active members. Members must pay membership dues by the end of March to be considered active.</p>
+{% elif url_name == 'members_current' %}
+<p>Members that have paid dues for the current year.</p>
+{% elif url_name == 'members_expired' %}
+<p>Members that have not paid dues for the curent year.</p>
+{% elif url_name == 'members_previous' %}
+<p>Members that paid dues for the previous or current year.</p>
+{% endif %}
+
+<p>{{ object_list|length }} members in this group.</p>
+
+<hr>
+
 <table class="table is-striped is-hoverable is-fullwidth">
     <thead>
         <tr>
