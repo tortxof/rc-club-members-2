@@ -78,7 +78,15 @@
                     &mdash;
                     {% endfor %}
                 </td>
-                <td>{{ member.ama_number|default:"&mdash;" }}</td>
+                <td>
+                    {% if member.ama_number %}
+                    <a href="{% url 'ama_verify' member.pk %}{% querystring next=request.path %}">
+                        {{ member.ama_number }}
+                    </a>
+                    {% else %}
+                    &mdash;
+                    {% endif %}
+                </td>
                 <td>
                     {% for office in member.offices.all %}
                     <span class="tag is-primary">{{ office }}</span>

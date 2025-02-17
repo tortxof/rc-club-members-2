@@ -7,6 +7,8 @@ from django.http import HttpResponseNotAllowed
 from django.shortcuts import redirect, render
 from django.views.generic import DetailView, ListView
 
+from ama import verify_ama_membership
+
 from .authentication import generate_signin_url
 from .forms import EmailReadOnlyTokenForm
 from .models import Member
@@ -81,6 +83,28 @@ def email_read_only_token(request):
         return redirect("index")
 
     return HttpResponseNotAllowed(["POST"])
+
+
+def ama_verify(request, pk):
+    response = redirect(request.GET.get("next", "index"))
+
+    try:
+        member = Member.objects.get(pk=pk)
+    except Member.DoesNotExist:
+        messages.error(request, "Member not found.")
+        return response
+
+    if not (member.last_name and member.ama_number):
+        messages.error(
+            request, "Last name and AMA number are needed to verify AMA membership."
+        )
+        return response
+
+    ama_status = verify_ama_membership(member.last_name, member.ama_number)
+
+    messages.info(request, ama_status)
+
+    return response
 
 
 class MembersListView(LoginRequiredMixin, ListView):
