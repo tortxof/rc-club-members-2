@@ -1,3 +1,5 @@
+import requests
+from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse, HttpResponseNotAllowed
@@ -44,7 +46,19 @@ def email_read_only_token(request):
             except Member.DoesNotExist:
                 return redirect("index")
 
-            return HttpResponse(generate_signin_url(member))
+            requests.post(
+                settings.MAILGUN_URL,
+                auth=("api", settings.MAILGUN_API_KEY),
+                data={
+                    "from": f"Members App <{settings.DEFAULT_FROM_EMAIL}>",
+                    "to": [member.email],
+                    "subject": "Members Sign In",
+                    "text": generate_signin_url(member),
+                },
+                timeout=settings.MAILGUN_TIMEOUT,
+            )
+
+            return redirect("index")
 
         return HttpResponse("Form not valid", status=400)
 
