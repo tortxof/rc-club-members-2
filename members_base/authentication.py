@@ -34,6 +34,9 @@ class ReadOnlyTokenBackend(BaseBackend):
         return None
 
     def authenticate(self, request, token=None, **kwargs):
+        if token is None:
+            return None
+
         try:
             token_data = signing.loads(
                 token, salt="readonlytoken", max_age=timedelta(days=4 * 7)
