@@ -71,6 +71,14 @@
               Previous
             </a>
             {% endif %}
+            {% if user.is_staff %}
+            <a
+            class="navbar-item{% if url_name == 'send_email_prepare' %} is-active{% endif %}"
+              href="{% url 'send_email_prepare' %}"
+            >
+              Send Email
+            </a>
+            {% endif %}
           </div>
 
           <div class="navbar-end">

@@ -1,0 +1,68 @@
+{% extends "members_base/base.html" %}
+
+{% block title %}Send Email{% endblock %}
+
+{% block content %}
+<form action="{% url 'send_email_prepare' %}" method="post">
+    {% csrf_token %}
+
+    <label class="label">From</label>
+    <div class="field has-addons">
+        <div class="control">
+            <input type="text" class="input" name="from_email_user" value="{{ form.from_email_user.value }}">
+        </div>
+        <div class="control">
+            <a class="button is-static">
+                @{{ MAILGUN_DOMAIN }}
+            </a>
+        </div>
+    </div>
+
+    <div class="field">
+        <label class="label">Subject</label>
+        <div class="control">
+            <input type="text" name="subject" class="input" value="{{ form.subject.value }}">
+        </div>
+    </div>
+
+    <div class="field">
+        <label class="label">Body</label>
+        <div class="control">
+            <textarea name="body" class="textarea" rows="24"></textarea>
+        </div>
+    </div>
+
+    <div class="columns">
+        <div class="column">
+            <div class="field">
+                <label class="label">Member Group</label>
+                <div class="control">
+                    <div class="select">
+                        <select name="member_group">
+                            {% for value, label in form.fields.member_group.choices %}
+                            <option
+                                value="{{ value }}"
+                                {% if value == form.member_group.value %}selected{% endif %}
+                            >
+                                {{ label }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="column is-narrow">
+            <div class="field">
+                <div class="control">
+                    <button type="submit" class="button is-primary">
+                        Send&hellip;
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</form>
+{% endblock %}

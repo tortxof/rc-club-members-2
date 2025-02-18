@@ -68,10 +68,13 @@ MESSAGE_TAGS = {
 
 LOGIN_URL = "index"
 
+MAILGUN_DOMAIN = os.getenv("MAILGUN_DOMAIN")
 MAILGUN_URL = os.getenv("MAILGUN_URL")
 MAILGUN_API_KEY = os.getenv("MAILGUN_API_KEY")
 MAILGUN_TIMEOUT = 60
+
 NOREPLY_EMAIL = os.getenv("NOREPLY_EMAIL")
+DEFAULT_FROM_EMAIL_USER = os.getenv("DEFAULT_FROM_EMAIL_USER")
 
 ROOT_URLCONF = "rc_club_members.urls"
 
@@ -150,3 +153,4 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 APP_ORIGIN = os.getenv("APP_ORIGIN")
 APP_NAME = os.getenv("APP_NAME")
+APP_SHORT_NAME = os.getenv("APP_SHORT_NAME")

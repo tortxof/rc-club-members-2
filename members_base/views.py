@@ -5,12 +5,13 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseNotAllowed
 from django.shortcuts import redirect, render
+from django.utils import timezone
 from django.views.generic import DetailView, ListView
 
 from ama import verify_ama_membership
 
 from .authentication import generate_signin_url
-from .forms import EmailReadOnlyTokenForm
+from .forms import EmailReadOnlyTokenForm, SendEmailForm
 from .models import Member
 
 
@@ -105,6 +106,61 @@ def ama_verify(request, pk):
     messages.info(request, ama_status)
 
     return response
+
+
+def send_email_prepare(request):
+    if request.method == "POST":
+        messages.info(request, "Not Implemented.")
+        form = SendEmailForm(request.POST)
+        if form.is_valid():
+            match form.cleaned_data["member_group"]:
+                case "all":
+                    queryset = Member.objects.all()
+                case "active":
+                    queryset = Member.objects.active()
+                case "current":
+                    queryset = Member.objects.current()
+                case "expired":
+                    queryset = Member.objects.expired()
+                case "previous":
+                    queryset = Member.objects.previous()
+
+            recipient_emails = [
+                record[0] for record in queryset.values_list("email") if record[0]
+            ]
+
+            request.session["send_email_data"] = {
+                "form_data": form.cleaned_data,
+                "recipient_emails": recipient_emails,
+            }
+
+            return redirect("send_email_confirm")
+
+        else:
+            messages.error(request, "Form not valid.")
+
+        return redirect("index")
+
+    elif request.method == "GET":
+        now = timezone.now()
+        subject = f"{settings.APP_SHORT_NAME} {now.strftime('%B')} Newsletter"
+        form = SendEmailForm(
+            initial={
+                "member_group": "active",
+                "from_email_user": settings.DEFAULT_FROM_EMAIL_USER,
+                "subject": subject,
+            }
+        )
+        return render(request, "members_base/send_email_prepare.html", {"form": form})
+
+
+def send_email_confirm(request):
+    if request.method == "POST":
+        messages.info(request, "Not implemented.")
+        return redirect("index")
+
+    elif request.method == "GET":
+        return render(request, "members_base/send_email_confirm.html")
 
 
 class MembersListView(LoginRequiredMixin, ListView):

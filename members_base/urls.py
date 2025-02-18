@@ -28,4 +28,6 @@ urlpatterns = [
     path("members/", views.MembersListView.as_view(), name="members"),
     path("members/<uuid:pk>", views.MemberDetailView.as_view(), name="member_detail"),
     path("ama-verify/<uuid:pk>", views.ama_verify, name="ama_verify"),
+    path("send-email-prepare/", views.send_email_prepare, name="send_email_prepare"),
+    path("send-email-confirm/", views.send_email_confirm, name="send_email_confirm"),
 ]
