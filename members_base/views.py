@@ -169,7 +169,8 @@ def send_email_prepare(request):
 
     elif request.method == "GET":
         now = timezone.now()
-        subject = f"{settings.APP_SHORT_NAME} {now.strftime('%B')} Newsletter"
+        month = now.strftime("%B")
+        subject = f"{settings.APP_SHORT_NAME} {month} Newsletter"
         form = SendEmailForm(
             initial={
                 "member_group": "active",
@@ -177,7 +178,11 @@ def send_email_prepare(request):
                 "subject": subject,
             }
         )
-        return render(request, "members_base/send_email_prepare.html", {"form": form})
+        return render(
+            request,
+            "members_base/send_email_prepare.html",
+            {"form": form, "month": month},
+        )
 
 
 @staff_member_required(login_url=settings.LOGIN_URL)
