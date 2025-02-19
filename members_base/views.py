@@ -56,15 +56,19 @@ def email_read_only_token(request):
                 messages.error(request, "Email address not found.")
                 return redirect("index")
 
+            signin_url = generate_signin_url(member)
             try:
                 requests.post(
                     settings.MAILGUN_URL,
                     auth=("api", settings.MAILGUN_API_KEY),
                     data={
-                        "from": f"Members App <{settings.DEFAULT_FROM_EMAIL}>",
+                        "from": f"{settings.APP_SHORT_NAME} Roster <{settings.NOREPLY_EMAIL}>",
                         "to": [member.email],
-                        "subject": "Members Sign In",
-                        "text": generate_signin_url(member),
+                        "subject": f"{settings.APP_SHORT_NAME} Roster Sign-In",
+                        "text": signin_url,
+                        "html": mistletoe.markdown(
+                            f"[Click here to sign in.]({signin_url})"
+                        ),
                     },
                     timeout=settings.MAILGUN_TIMEOUT,
                 )
