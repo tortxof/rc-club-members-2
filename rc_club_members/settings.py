@@ -31,6 +31,7 @@ DEBUG = json.loads(os.getenv("APP_DEBUG", "false"))
 
 ALLOWED_HOSTS = json.loads(os.getenv("ALLOWED_HOSTS", "[]"))
 
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Application definition
 
@@ -46,6 +47,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
