@@ -29,7 +29,7 @@ SECRET_KEY = os.getenv("APP_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = json.loads(os.getenv("APP_DEBUG", "false"))
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = json.loads(os.getenv("ALLOWED_HOSTS", "[]"))
 
 
 # Application definition
@@ -105,7 +105,7 @@ WSGI_APPLICATION = "rc_club_members.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "NAME": os.getenv("DATABASE_PATH", BASE_DIR / "db.sqlite3"),
     }
 }
 
