@@ -70,6 +70,12 @@
             >
               Previous
             </a>
+            <a
+              class="navbar-item{% if url_name == 'members_officers' %} is-active{% endif %}"
+              href="{% url 'members_officers' %}"
+            >
+              Officers
+            </a>
             {% endif %}
             {% if user.is_staff %}
             <a

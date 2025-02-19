@@ -131,6 +131,8 @@ def download_xlsx(request, group):
             queryset = Member.objects.expired()
         case "previous":
             queryset = Member.objects.previous()
+        case "officers":
+            queryset = Member.objects.officers()
         case _:
             messages.error(request, "Invalid group selection.")
             return redirect("index")
@@ -249,6 +251,8 @@ def send_email_prepare(request):
                     queryset = Member.objects.expired()
                 case "previous":
                     queryset = Member.objects.previous()
+                case "officers":
+                    queryset = Member.objects.officers()
 
             recipient_variables = {}
 
@@ -386,6 +390,14 @@ class MembersPreviousListView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["member_group"] = "previous"
+        return context
+
+class MembersOfficersListView(LoginRequiredMixin, ListView):
+    queryset = Member.objects.officers().order_by("last_name", "first_name")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["member_group"] = "officers"
         return context
 
 

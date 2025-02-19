@@ -52,6 +52,9 @@ class MemberQuerySet(models.QuerySet):
         if datetime.date.today().month <= 3:
             return self.previous()
         return self.current()
+    
+    def officers(self):
+        return self.filter(offices__isnull=False)
 
     def mailto_url(self):
         emails = ",".join(member.email for member in self if member.email)

@@ -13,6 +13,7 @@ class SendEmailForm(forms.Form):
             ("current", "Current"),
             ("expired", "Expired"),
             ("previous", "Previous"),
+            ("officers", "Officers")
         ),
     )
     from_email_user = forms.CharField()
