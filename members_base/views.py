@@ -165,7 +165,7 @@ def send_email_prepare(request):
         else:
             messages.error(request, "Form not valid.")
 
-        return redirect("index")
+        return redirect("send_email_prepare")
 
     elif request.method == "GET":
         now = timezone.now()
