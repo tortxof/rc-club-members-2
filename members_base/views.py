@@ -24,9 +24,7 @@ def index(request):
     if request.user.is_authenticated:
         return redirect("members_active")
 
-    form = EmailReadOnlyTokenForm()
-
-    return render(request, "members_base/index.html", {"form": form})
+    return render(request, "members_base/index.html")
 
 
 def sign_out(request):
