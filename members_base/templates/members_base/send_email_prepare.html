@@ -1,6 +1,6 @@
 {% extends "members_base/base.html" %}
 
-{% block title %}Send Email{% endblock %}
+{% block title %}Send Email - {{ block.super }}{% endblock %}
 
 {% block content %}
 <form action="{% url 'send_email_prepare' %}" method="post">
