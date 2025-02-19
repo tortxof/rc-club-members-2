@@ -19,10 +19,12 @@
         <p>{{ object_list|length }} {{ object_list|pluralize:"member,members" }} in this group.</p>
     </div>
     <div class="column is-narrow">
+        {% if object_list|length > 0 %}
         <a href="{{ object_list.mailto_url }}" class="button is-link">
             Email {{ object_list|pluralize:"this,these" }} {{ object_list|length }}
             {{ object_list|pluralize:"member,members" }}
         </a>
+        {% endif %}
     </div>
 </div>
 
