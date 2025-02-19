@@ -20,10 +20,15 @@
     </div>
     <div class="column is-narrow">
         {% if object_list|length > 0 %}
-        <a href="{{ object_list.mailto_url }}" class="button is-link">
-            Email {{ object_list|pluralize:"this,these" }} {{ object_list|length }}
-            {{ object_list|pluralize:"member,members" }}
-        </a>
+        <div class="buttons">
+            <a href="{% url 'download_xlsx' member_group %}" class="button is-link">
+                Download Excel Spreadsheet
+            </a>
+            <a href="{{ object_list.mailto_url }}" class="button is-link">
+                Email {{ object_list|pluralize:"this,these" }} {{ object_list|length }}
+                {{ object_list|pluralize:"member,members" }}
+            </a>
+        </div>
         {% endif %}
     </div>
 </div>

@@ -1,14 +1,16 @@
 import json
+from itertools import count
 
 import mistletoe
 import requests
+import xlsxwriter
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponseNotAllowed
+from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import redirect, render
 from django.utils import timezone
 from django.views.generic import DetailView, ListView
@@ -112,6 +114,121 @@ def ama_verify(request, pk):
     ama_status = verify_ama_membership(member.last_name, member.ama_number)
 
     messages.info(request, ama_status)
+
+    return response
+
+
+@login_required
+def download_xlsx(request, group):
+    match group:
+        case "all":
+            queryset = Member.objects.all()
+        case "active":
+            queryset = Member.objects.active()
+        case "current":
+            queryset = Member.objects.current()
+        case "expired":
+            queryset = Member.objects.expired()
+        case "previous":
+            queryset = Member.objects.previous()
+        case _:
+            messages.error(request, "Invalid group selection.")
+            return redirect("index")
+
+    queryset = queryset.order_by("last_name", "first_name")
+    member_count = queryset.count()
+
+    now = timezone.now()
+
+    filename = f"{settings.APP_SHORT_NAME}-roster-{now.date().isoformat()}.xlsx".lower()
+
+    response = HttpResponse(
+        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+    col_names = [
+        "First",
+        "Last",
+        "Email",
+        "AMA Number",
+        "Phone",
+        "Address",
+        "City",
+        "State",
+        "Zip Code",
+        "Class",
+        "Office",
+        "Expiration",
+        "Date of Birth",
+    ]
+
+    workbook = xlsxwriter.Workbook(response)
+
+    worksheet = workbook.add_worksheet("Members")
+    worksheet.set_landscape()
+
+    header_fmt = workbook.add_format({"bold": True, "bottom": True})
+    expired_fmt = workbook.add_format({"font_color": "red"})
+    gray_bg_fmt = workbook.add_format({"bg_color": "#DDDDDD"})
+
+    for col, name in enumerate(col_names):
+        worksheet.write(0, col, name, header_fmt)
+
+    for row, member in enumerate(queryset, start=1):
+        col = count()
+        worksheet.write(row, next(col), member.first_name)
+        worksheet.write(row, next(col), member.last_name)
+        worksheet.write(row, next(col), member.email)
+        worksheet.write(row, next(col), member.ama_number)
+        worksheet.write(
+            row,
+            next(col),
+            " ".join(
+                phonenumber.phone_number
+                for phonenumber in member.phonenumber_set.all().order_by("is_primary")
+            ),
+        )
+        worksheet.write(row, next(col), member.address)
+        worksheet.write(row, next(col), member.city)
+        worksheet.write(row, next(col), member.state)
+        worksheet.write(row, next(col), member.zip_code)
+        worksheet.write(row, next(col), member.membership_class.name)
+        worksheet.write(
+            row, next(col), " ".join(office.name for office in member.offices.all())
+        )
+        if member.membership_is_current:
+            worksheet.write(row, next(col), member.expiration_date.isoformat())
+        else:
+            worksheet.write(
+                row, next(col), member.expiration_date.isoformat(), expired_fmt
+            )
+        worksheet.write(
+            row,
+            next(col),
+            member.date_of_birth.isoformat() if member.date_of_birth else "",
+        )
+
+    for row in range(2, member_count + 1, 2):
+        worksheet.set_row(row, None, gray_bg_fmt)
+
+    worksheet.merge_range(
+        member_count + 2,
+        0,
+        member_count + 2,
+        len(col_names) - 1,
+        f"{member_count} members",
+    )
+    worksheet.merge_range(
+        member_count + 3,
+        0,
+        member_count + 3,
+        len(col_names) - 1,
+        f"Generated: {now.date().isoformat()}",
+    )
+    worksheet.print_area(0, 0, member_count + 3, len(col_names) - 1)
+    worksheet.fit_to_pages(1, 1)
+    workbook.close()
 
     return response
 
@@ -230,21 +347,46 @@ def send_email_confirm(request):
 class MembersListView(LoginRequiredMixin, ListView):
     queryset = Member.objects.all().order_by("last_name", "first_name")
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["member_group"] = "all"
+        return context
+
 
 class MembersActiveListView(LoginRequiredMixin, ListView):
     queryset = Member.objects.active().order_by("last_name", "first_name")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["member_group"] = "active"
+        return context
 
 
 class MembersCurrentListView(LoginRequiredMixin, ListView):
     queryset = Member.objects.current().order_by("last_name", "first_name")
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["member_group"] = "current"
+        return context
+
 
 class MembersExpiredListView(LoginRequiredMixin, ListView):
     queryset = Member.objects.expired().order_by("last_name", "first_name")
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["member_group"] = "expired"
+        return context
+
 
 class MembersPreviousListView(LoginRequiredMixin, ListView):
     queryset = Member.objects.previous().order_by("last_name", "first_name")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["member_group"] = "previous"
+        return context
 
 
 class MemberDetailView(LoginRequiredMixin, DetailView):
