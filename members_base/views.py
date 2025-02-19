@@ -114,7 +114,7 @@ def ama_verify(request, pk):
     return response
 
 
-@staff_member_required
+@staff_member_required(login_url=settings.LOGIN_URL)
 def send_email_prepare(request):
     if request.method == "POST":
         messages.info(request, "Not Implemented.")
@@ -175,7 +175,7 @@ def send_email_prepare(request):
         return render(request, "members_base/send_email_prepare.html", {"form": form})
 
 
-@staff_member_required
+@staff_member_required(login_url=settings.LOGIN_URL)
 def send_email_confirm(request):
     if request.method == "POST":
         if "send_email_data" not in request.session:
