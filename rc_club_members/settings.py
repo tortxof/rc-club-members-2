@@ -31,6 +31,8 @@ DEBUG = json.loads(os.getenv("APP_DEBUG", "false"))
 
 ALLOWED_HOSTS = json.loads(os.getenv("ALLOWED_HOSTS", "[]"))
 
+CSRF_TRUSTED_ORIGINS = json.loads(os.getenv("CSRF_TRUSTED_ORIGINS", "[]"))
+
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Application definition
