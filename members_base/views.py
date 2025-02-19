@@ -1,3 +1,4 @@
+import mistletoe
 import requests
 from django.conf import settings
 from django.contrib import messages
@@ -129,9 +130,14 @@ def send_email_prepare(request):
                 record[0] for record in queryset.values_list("email") if record[0]
             ]
 
+            body_html = mistletoe.markdown(
+                form.cleaned_data["body"].replace("\r\n", "\n")
+            )
+
             request.session["send_email_data"] = {
                 "form_data": form.cleaned_data,
                 "recipient_emails": recipient_emails,
+                "body_html": body_html,
             }
 
             return redirect("send_email_confirm")

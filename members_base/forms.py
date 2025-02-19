@@ -17,4 +17,4 @@ class SendEmailForm(forms.Form):
     )
     from_email_user = forms.CharField()
     subject = forms.CharField()
-    body = forms.CharField(widget=forms.Textarea)
+    body = forms.CharField()
