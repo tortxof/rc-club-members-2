@@ -16,10 +16,13 @@
         {% elif url_name == 'members_previous' %}
         <p>Members that paid dues for the previous or current year.</p>
         {% endif %}
-        <p>{{ object_list|length }} members in this group.</p>
+        <p>{{ object_list|length }} {{ object_list|pluralize:"member,members" }} in this group.</p>
     </div>
     <div class="column is-narrow">
-        <a href="{{ object_list.mailto_url }}" class="button is-link">Email these {{ object_list|length }} members</a>
+        <a href="{{ object_list.mailto_url }}" class="button is-link">
+            Email {{ object_list|pluralize:"this,these" }} {{ object_list|length }}
+            {{ object_list|pluralize:"member,members" }}
+        </a>
     </div>
 </div>
 
