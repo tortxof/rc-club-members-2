@@ -10,4 +10,4 @@ WORKDIR /app
 
 RUN uv sync --frozen
 
-CMD ["uv", "run", "gunicorn", "rc_club_members.wsgi"]
+CMD ["uv", "run", "gunicorn", "-b", "0.0.0.0:8000", "rc_club_members.wsgi"]
