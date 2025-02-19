@@ -4,7 +4,9 @@ import mistletoe
 import requests
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseNotAllowed
 from django.shortcuts import redirect, render
@@ -89,6 +91,7 @@ def email_read_only_token(request):
     return HttpResponseNotAllowed(["POST"])
 
 
+@login_required
 def ama_verify(request, pk):
     response = redirect(request.GET.get("next", "index"))
 
@@ -111,6 +114,7 @@ def ama_verify(request, pk):
     return response
 
 
+@staff_member_required
 def send_email_prepare(request):
     if request.method == "POST":
         messages.info(request, "Not Implemented.")
@@ -171,6 +175,7 @@ def send_email_prepare(request):
         return render(request, "members_base/send_email_prepare.html", {"form": form})
 
 
+@staff_member_required
 def send_email_confirm(request):
     if request.method == "POST":
         if "send_email_data" not in request.session:
