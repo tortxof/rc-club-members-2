@@ -119,7 +119,6 @@ def ama_verify(request, pk):
 @staff_member_required(login_url=settings.LOGIN_URL)
 def send_email_prepare(request):
     if request.method == "POST":
-        messages.info(request, "Not Implemented.")
         form = SendEmailForm(request.POST)
         if form.is_valid():
             match form.cleaned_data["member_group"]:
