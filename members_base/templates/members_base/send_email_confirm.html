@@ -28,8 +28,10 @@
 
 <label class="label">Body</label>
 
-<div class="content">
-    {{ request.session.send_email_data.body_html|safe }}
+<div class="box">
+    <div class="content">
+        {{ request.session.send_email_data.body_html|safe }}
+    </div>
 </div>
 
 <form action="{% url 'send_email_confirm' %}" method="post">
