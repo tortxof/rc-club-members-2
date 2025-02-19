@@ -1,0 +1,45 @@
+{% extends 'members_base/base.html' %}
+
+{% block content %}
+
+<label class="label">Recipients</label>
+
+<div class="tags">
+    {% for email in request.session.send_email_data.recipient_variables.keys %}
+    <span class="tag is-medium">{{ email }}</span>
+    {% endfor %}
+</div>
+
+<label class="label">From</label>
+
+<div class="block">
+    <span class="tag is-medium">
+        {{ request.session.send_email_data.form_data.from_email_user }}@{{ MAILGUN_DOMAIN }}
+    </span>
+</div>
+
+
+<label class="label">Subject</label>
+
+<div class="block">
+    {{ request.session.send_email_data.form_data.subject }}
+</div>
+
+
+<label class="label">Body</label>
+
+<div class="content">
+    {{ request.session.send_email_data.body_html|safe }}
+</div>
+
+<form action="{% url 'send_email_confirm' %}" method="post">
+    {% csrf_token %}
+    <div class="buttons is-right">
+        <button type="submit" class="button is-success">Send</button>
+    </div>
+</form>
+
+<hr>
+
+<p>{{ request.session.send_email_data }}</p>
+{% endblock %}

@@ -1,3 +1,5 @@
+import json
+
 import mistletoe
 import requests
 from django.conf import settings
@@ -126,9 +128,18 @@ def send_email_prepare(request):
                 case "previous":
                     queryset = Member.objects.previous()
 
-            recipient_emails = [
-                record[0] for record in queryset.values_list("email") if record[0]
-            ]
+            recipient_variables = {}
+
+            for member in queryset:
+                if not member.email:
+                    continue
+
+                recipient_variables[member.email] = {
+                    "first_name": member.first_name,
+                    "last_name": member.last_name,
+                    "full_name": member.full_name,
+                    "signin_url": generate_signin_url(member),
+                }
 
             body_html = mistletoe.markdown(
                 form.cleaned_data["body"].replace("\r\n", "\n")
@@ -136,7 +147,7 @@ def send_email_prepare(request):
 
             request.session["send_email_data"] = {
                 "form_data": form.cleaned_data,
-                "recipient_emails": recipient_emails,
+                "recipient_variables": recipient_variables,
                 "body_html": body_html,
             }
 
@@ -162,10 +173,42 @@ def send_email_prepare(request):
 
 def send_email_confirm(request):
     if request.method == "POST":
-        messages.info(request, "Not implemented.")
-        return redirect("index")
+        if "send_email_data" not in request.session:
+            return redirect("send_email_prepare")
+
+        send_email_data = request.session["send_email_data"]
+
+        response = requests.post(
+            settings.MAILGUN_URL,
+            auth=("api", settings.MAILGUN_API_KEY),
+            data={
+                "from": f"{send_email_data['form_data']['from_email_user']}@{settings.MAILGUN_DOMAIN}",
+                "to": list(send_email_data["recipient_variables"].keys()),
+                "subject": send_email_data["form_data"]["subject"],
+                "text": send_email_data["form_data"]["body"],
+                "html": send_email_data["body_html"],
+                "recipient-variables": json.dumps(
+                    send_email_data["recipient_variables"]
+                ),
+            },
+        )
+
+        if response.status_code == 200:
+            messages.success(request, response.json().get("message", "Email sent."))
+
+            del request.session["send_email_data"]
+
+            return redirect("index")
+
+        else:
+            messages.warning(request, "There was a problem sending the email.")
+
+            return redirect("send_email_confirm")
 
     elif request.method == "GET":
+        if "send_email_data" not in request.session:
+            return redirect("send_email_prepare")
+
         return render(request, "members_base/send_email_confirm.html")
 
 
