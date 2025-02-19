@@ -145,6 +145,10 @@ def send_email_prepare(request):
                     "signin_url": generate_signin_url(member),
                 }
 
+            if len(recipient_variables) == 0:
+                messages.warning(request, "No email recipients in this group.")
+                return redirect("send_email_prepare")
+
             body_html = mistletoe.markdown(
                 form.cleaned_data["body"].replace("\r\n", "\n")
             )
