@@ -42,7 +42,7 @@ class MemberQuerySet(models.QuerySet):
     def current(self):
         return self.filter(expiration_date__gte=datetime.date.today())
 
-    def previous(self):
+    def current_last_year(self):
         end_of_last_year = datetime.date.today().replace(
             month=1, day=1
         ) - datetime.timedelta(days=1)
@@ -50,9 +50,12 @@ class MemberQuerySet(models.QuerySet):
 
     def active(self):
         if datetime.date.today().month <= 3:
-            return self.previous()
+            return self.current_last_year()
         return self.current()
-    
+
+    def previous(self):
+        return self.expired().intersection(self.current_last_year())
+
     def officers(self):
         return self.filter(offices__isnull=False)
 
