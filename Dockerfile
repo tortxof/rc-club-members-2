@@ -12,4 +12,4 @@ RUN uv sync --frozen
 
 RUN uv run ./manage.py collectstatic
 
-CMD ["uv", "run", "gunicorn", "-b", "0.0.0.0:8000", "rc_club_members.wsgi"]
+CMD ["uv", "run", "gunicorn", "-w", "4", "-b", "0.0.0.0:8000", "rc_club_members.wsgi"]
