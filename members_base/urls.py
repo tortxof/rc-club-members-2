@@ -25,7 +25,11 @@ urlpatterns = [
         views.MembersPreviousListView.as_view(),
         name="members_previous",
     ),
-    path("members-officers/", views.MembersOfficersListView.as_view(), name="members_officers"),
+    path(
+        "members-officers/",
+        views.MembersOfficersListView.as_view(),
+        name="members_officers",
+    ),
     path("members/", views.MembersListView.as_view(), name="members"),
     path("members/<uuid:pk>", views.MemberDetailView.as_view(), name="member_detail"),
     path("ama-verify/<uuid:pk>", views.ama_verify, name="ama_verify"),
