@@ -36,4 +36,5 @@ urlpatterns = [
     path("send-email-prepare/", views.send_email_prepare, name="send_email_prepare"),
     path("send-email-confirm/", views.send_email_confirm, name="send_email_confirm"),
     path("xlsx/<str:group>/", views.download_xlsx, name="download_xlsx"),
+    path("dump/", views.download_dump, name="download_dump"),
 ]

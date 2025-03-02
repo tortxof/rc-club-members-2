@@ -84,10 +84,13 @@
             {% endif %}
             {% if user.is_staff %}
             <a
-            class="navbar-item{% if url_name == 'send_email_prepare' %} is-active{% endif %}"
+              class="navbar-item{% if url_name == 'send_email_prepare' %} is-active{% endif %}"
               href="{% url 'send_email_prepare' %}"
             >
               Send Email
+            </a>
+            <a class="navbar-item" href="{% url 'download_dump' %}">
+              Backup
             </a>
             {% endif %}
           </div>

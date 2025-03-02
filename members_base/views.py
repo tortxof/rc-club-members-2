@@ -10,6 +10,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.management import call_command
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import redirect, render
 from django.utils import timezone
@@ -236,6 +237,22 @@ def download_xlsx(request, group):
 
 
 @staff_member_required(login_url=settings.LOGIN_URL)
+def download_dump(request):
+    now = timezone.now()
+
+    filename = f"{settings.APP_SHORT_NAME}-dump-{now:%Y-%m-%d-%H-%M-%S}.json".lower()
+
+    response = HttpResponse(
+        content_type="application/json",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+    call_command("dumpdata", "members_base", stdout=response)
+
+    return response
+
+
+@staff_member_required(login_url=settings.LOGIN_URL)
 def send_email_prepare(request):
     if request.method == "POST":
         form = SendEmailForm(request.POST)
@@ -391,6 +408,7 @@ class MembersPreviousListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context["member_group"] = "previous"
         return context
+
 
 class MembersOfficersListView(LoginRequiredMixin, ListView):
     queryset = Member.objects.officers().order_by("last_name", "first_name")
