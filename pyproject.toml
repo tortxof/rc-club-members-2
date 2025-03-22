@@ -18,3 +18,7 @@ dependencies = [
 dev = [
     "ruff",
 ]
+
+[tool.ruff]
+exclude = ["members_base/migrations/*.py"]
+lint.extend-select = ["I"]
