@@ -96,6 +96,17 @@
           </div>
 
           <div class="navbar-end">
+            <a class="navbar-item" id="theme-toggle">
+              <span id="theme-icon-auto">
+                {% include 'members_base/sun-moon.svg' %}
+              </span>
+              <span id="theme-icon-light" style="display: none;">
+                {% include 'members_base/sun.svg' %}
+              </span>
+              <span id="theme-icon-dark" style="display: none;">
+                {% include 'members_base/moon.svg' %}
+              </span>
+            </a>
             {% if user.is_authenticated %}
             <div class="navbar-item">{{ user.username }}</div>
             {% endif %}
