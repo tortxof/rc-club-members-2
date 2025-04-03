@@ -11,27 +11,27 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-  const theme_toggle_el = document.getElementById("theme-toggle");
-  const theme_icon_auto_el = document.getElementById("theme-icon-auto");
-  const theme_icon_light_el = document.getElementById("theme-icon-light");
-  const theme_icon_dark_el = document.getElementById("theme-icon-dark");
+  const $theme_toggle = document.getElementById("theme-toggle");
+  const $theme_icon_auto = document.getElementById("theme-icon-auto");
+  const $theme_icon_light = document.getElementById("theme-icon-light");
+  const $theme_icon_dark = document.getElementById("theme-icon-dark");
 
   function handleThemeChange(theme) {
     if (theme === "auto") {
       delete document.documentElement.dataset.theme;
-      theme_icon_auto_el.style.display = "";
-      theme_icon_light_el.style.display = "none";
-      theme_icon_dark_el.style.display = "none";
+      $theme_icon_auto.style.display = "";
+      $theme_icon_light.style.display = "none";
+      $theme_icon_dark.style.display = "none";
     } else if (theme === "light") {
       document.documentElement.dataset.theme = theme;
-      theme_icon_auto_el.style.display = "none";
-      theme_icon_light_el.style.display = "";
-      theme_icon_dark_el.style.display = "none";
+      $theme_icon_auto.style.display = "none";
+      $theme_icon_light.style.display = "";
+      $theme_icon_dark.style.display = "none";
     } else if (theme === "dark") {
       document.documentElement.dataset.theme = theme;
-      theme_icon_auto_el.style.display = "none";
-      theme_icon_light_el.style.display = "none";
-      theme_icon_dark_el.style.display = "";
+      $theme_icon_auto.style.display = "none";
+      $theme_icon_light.style.display = "none";
+      $theme_icon_dark.style.display = "";
     } else {
       handleThemeChange("auto");
       return;
@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return "auto";
   }
 
-  theme_toggle_el.addEventListener("click", () => {
+  $theme_toggle.addEventListener("click", () => {
     const theme = getTheme();
     if (theme === "auto") {
       handleThemeChange("light");
