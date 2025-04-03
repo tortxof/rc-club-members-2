@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   new ClipboardJS(".click-copy");
 });
 
-(() => {
+document.addEventListener("DOMContentLoaded", () => {
   const theme_toggle_el = document.getElementById("theme-toggle");
   const theme_icon_auto_el = document.getElementById("theme-icon-auto");
   const theme_icon_light_el = document.getElementById("theme-icon-light");
@@ -67,4 +67,4 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   handleThemeChange(getTheme());
-})();
+});
